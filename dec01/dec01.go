@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -47,7 +48,7 @@ func main() {
 	errorHandler(derr)
 
 	// read though the array, totaling each elf's calories
-	for i, line := range data {
+	for _, line := range data {
 		if line != "" {
 			foodCal, cerr := strconv.Atoi(line)
 
@@ -55,22 +56,25 @@ func main() {
 
 			totalCalories += foodCal
 
-			log.Println("elf: " + strconv.Itoa(elf) + ", meal: " + strconv.Itoa(i) + ", calories: " + line + "\n")
-
 		} else {
 			elfCalories = append(elfCalories, totalCalories)
-			log.Println("Total for elf: " + strconv.Itoa(elf) + "calories carried:" + strconv.Itoa(elfCalories[elf]))
+
 			totalCalories = 0
 			elf++
 		}
 	}
 
-	// now find which elf is carrying the most calories
-	for j := 1; j < elf; j++ {
-		if elfCalories[0] < elfCalories[j] {
-			elfCalories[0] = elfCalories[j]
-		}
-	}
+	sort.Ints(elfCalories)
 
-	log.Println("the most calories carried by an elf is: ", elfCalories[0])
+	lastelf := len(elfCalories)
+
+	log.Println("the most calories carried by an elf is: ", elfCalories[lastelf-1])
+
+	// now find the total calories carried by the top three elves.
+	totalThreeCalories := elfCalories[lastelf-1]
+	totalThreeCalories += elfCalories[lastelf-2]
+	totalThreeCalories += elfCalories[lastelf-3]
+
+	log.Println("the total calories carried by  the top three elves is: ", totalThreeCalories)
+
 }
