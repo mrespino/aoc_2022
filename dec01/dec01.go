@@ -9,12 +9,10 @@ import (
 )
 
 // errorHandler is a quick and dirty way to check err after function calls
-func errorHandler(e error) error {
+func errorHandler(e error) {
 	if e != nil {
-		return e
+		panic(e)
 	}
-
-	return nil
 }
 
 // fileSlurper reads a file of input data and creates an array of data inputs
