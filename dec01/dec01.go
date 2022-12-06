@@ -9,10 +9,19 @@ import (
 )
 
 // errorHandler is a quick and dirty way to check err after function calls
-func errorHandler(e error) {
+func errorHandler(state string, e error) error {
 	if e != nil {
-		panic(e)
+		log.Println("error: ", e)
+		switch state {
+		case "break":
+			break
+		case "return":
+			return e
+		default:
+			panic(e)
+		}
 	}
+	return nil
 }
 
 // fileSlurper reads a file of input data and creates an array of data inputs
@@ -21,7 +30,7 @@ func fileSlurper(path string) ([]string, error) {
 
 	file, err := os.Open(path)
 
-	errorHandler(err)
+	errorHandler("return", err)
 
 	defer file.Close()
 
@@ -43,14 +52,14 @@ func main() {
 
 	data, derr := fileSlurper("input")
 
-	errorHandler(derr)
+	errorHandler("return", derr)
 
 	// read though the array, totaling each elf's calories
 	for _, line := range data {
 		if line != "" {
 			foodCal, cerr := strconv.Atoi(line)
 
-			errorHandler(cerr)
+			errorHandler("return", cerr)
 
 			totalCalories += foodCal
 
